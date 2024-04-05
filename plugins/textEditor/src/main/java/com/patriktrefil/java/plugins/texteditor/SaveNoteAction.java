@@ -83,6 +83,7 @@ public class SaveNoteAction extends AbstractAction implements IncludeInMenubar, 
             return;
         }
         textEditor.setDirty(false);
+        textEditor.setCurrentFile(saveContentsHere);
 
         afterSaveHooks.forEach(Runnable::run);
     }
