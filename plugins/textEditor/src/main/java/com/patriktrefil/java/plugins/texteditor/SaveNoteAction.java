@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 public class SaveNoteAction extends AbstractAction implements IncludeInMenubar, IncludeInCommandPalette {
-    private File saveContentsHere;
     private static final List<Runnable> afterSaveHooks = new ArrayList<>();
 
     /**
@@ -36,14 +35,11 @@ public class SaveNoteAction extends AbstractAction implements IncludeInMenubar, 
         super("Save as");
     }
 
-    public SaveNoteAction(File saveContentsHere) {
-        super("Save");
-        this.saveContentsHere = saveContentsHere;
-    }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
         System.out.println("Saving file called");
+        var saveContentsHere = TextEditor.getInstance().getCurrentFile();
         if (saveContentsHere == null) {
             final var fileChooser = new JFileChooser();
             final var htmlFilter = new FileNameExtensionFilter("html file", "html");
@@ -54,9 +50,9 @@ public class SaveNoteAction extends AbstractAction implements IncludeInMenubar, 
                 case JFileChooser.APPROVE_OPTION -> {
                     final var selectedFile = fileChooser.getSelectedFile();
                     if (selectedFile.getName().endsWith(".html"))
-                        this.saveContentsHere = selectedFile;
+                        saveContentsHere = selectedFile;
                     else
-                        this.saveContentsHere = new File(selectedFile.getAbsolutePath() + ".html");
+                        saveContentsHere = new File(selectedFile.getAbsolutePath() + ".html");
 
                 }
                 case JFileChooser.CANCEL_OPTION -> {
@@ -65,6 +61,10 @@ public class SaveNoteAction extends AbstractAction implements IncludeInMenubar, 
                 case JFileChooser.ERROR_OPTION -> {
                     JOptionPane.showMessageDialog(null, "Failed to save file here", "Failed to save file",
                             JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                default -> {
+                    System.err.println("Unexpected return value from file chooser");
                     return;
                 }
             }

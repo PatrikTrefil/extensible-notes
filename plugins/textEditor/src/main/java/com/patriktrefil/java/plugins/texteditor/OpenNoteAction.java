@@ -82,7 +82,7 @@ public class OpenNoteAction extends AbstractAction implements IncludeInMenubar, 
                     }
                 }
             } else {
-                new SaveNoteAction(currentFile).actionPerformed(e);
+                new SaveNoteAction().actionPerformed(e);
             }
 
         }
